@@ -4,6 +4,10 @@
 /config/.env
 /logs/*
 /tmp/*
+.editorconfig
+.gitattributes
+.github/*
+.travis.yml
 # /vendor/*
 
 # OS generated files #
