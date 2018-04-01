@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\I18n\Time;
 /**
  * Logs Controller
  *
@@ -20,12 +20,47 @@ class LogsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Persons']
-        ];
-        $logs = $this->paginate($this->Logs);
+    	$remark_log = $this->Logs->find()->contain('Persons')->select(['remark'])->where(['Persons.name'=>'salla','score'=>-2])->first();
+    	$people = $this->Logs->Persons->find()->where( ['name IN'=>explode(',',$remark_log->remark)]);
+    	$log = $this->Logs->newEntity();
+    	$q = $this->request->query('incurred');
+    	if (empty($q)) {
+			$incurred = Time::now();
+			$incurred->timezone = 'Asia/Hong_Kong';
+			$log->incurred = $incurred;
+			$meal = $incurred->format('H');
+    	}
+    	else {
+    		$incurred = new Time(\DateTime::createFromFormat('Y-m-d', $q));
+    		$meal = $this->request->query('meal');
+    		$meal = empty($meal) || ($meal != 9 && $meal != 13) ? 19 : $meal;
+    	}
+    	$incurred->hour($meal);
+    	$incurred->minute(0);
+    	$incurred->second(0);
+    	
+		$log->incurred = $incurred;
+    	foreach ($people as $person) {
+    		$person->score = 0;
+    	}
+    	// person id of the washing person
+    	$meals = ['9'=>'9 AM', '13'=>'1 PM', '19'=>'7 PM'];
+    	//debug($log);
+    	$date1 = '';
+    	$logs = $this->Logs->find()->contain(['Persons'])->
+        	where(['incurred <'=>$incurred])->order(['incurred DESC', 'person_id']);
+		$count = [];
+        foreach ($logs
+				as $l) {
+			if ($l->incurred->i18nFormat('yyyy-MM-dd HH') != $date1) {
+				$date1 = $l->incurred->i18nFormat('yyyy-MM-dd HH');
+				$count[$date1] = 1;
+			}
+			else
+				$count[$date1] = $count[$date1]+1;
+		}
 
-        $this->set(compact('logs'));
+        $this->set(compact('logs', 'count', 'people', 'log', 'meals'));
     }
 
     /**

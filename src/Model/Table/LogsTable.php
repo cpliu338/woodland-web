@@ -37,7 +37,7 @@ class LogsTable extends Table
         $this->setPrimaryKey('id');
 
         $this->belongsTo('Persons', [
-            'foreignKey' => 'persons_id',
+            'foreignKey' => 'person_id',
             'joinType' => 'INNER'
         ]);
     }
@@ -83,7 +83,7 @@ class LogsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['persons_id'], 'Persons'));
+        $rules->add($rules->existsIn(['person_id'], 'Persons'));
 
         return $rules;
     }

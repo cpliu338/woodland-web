@@ -1,6 +1,3 @@
-<?php
-if (!isset($params['escape']) || $params['escape'] !== false) {
-    $message = h($message);
-}
-?>
-<div class="message success" onclick="this.classList.add('hidden')"><?= $message ?></div>
+<div id="flash" class="alert alert-success">
+<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+<?= h($message) ?></div>

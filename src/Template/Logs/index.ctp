@@ -3,55 +3,156 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\Log[]|\Cake\Collection\CollectionInterface $logs
  */
+ $this->start('css');
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Log'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Persons'), ['controller' => 'Persons', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New Person'), ['controller' => 'Persons', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="logs index large-9 medium-8 columns content">
-    <h3><?= __('Logs') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('incurred') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('score') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('accum') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('remark') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('persons_id') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
+<style>
+button, #submit {
+	padding: 1em; margin: 1em;
+}
+#incurred, #meal {
+	font-size: x-large;
+}
+</style>
+<?php
+	$this->end();
+	echo $this->Form->create($log, ['type'=>'get', 'id'=>'change-date']);
+?>
+<div class="row">
+	<div class='col-sm-3 col-xs-3 col-md-2'>
+		<?= $this->Form->input('incurred', ['value'=>$log->incurred->format('Y-m-d'),
+			'type'=>'text']) ?>
+	</div>
+	<div class='col-sm-3 col-xs-3 col-md-2'>
+		<?= $this->Form->input('meal', ['type'=>'select', 'options'=>$meals]) ?>
+	</div>
+	<div class='col-sm-3 col-xs-3 col-md-2'>
+		<?= $this->Form->submit('Change') ?>
+	</div>
+</div>
+<?php
+		echo $this->Form->end();
+	echo $this->Form->create($log);
+?>
+<div class="row">
+<?php
+	foreach ($people as $person) {
+		echo $this->Form->button($person->name . ' : ' . $person->score, 
+			['class'=>'col-sm-4 col-xs-4 col-md-3',
+			'data-pid'=>$person->id,
+			'type'=>'button']),
+		$this->Form->input("id_{$person->id}", ['type'=>'hidden', 'value'=>$person->score]);
+	}
+?>
+<?php
+	echo $this->Form->submit('Submit', ['class'=>'col-sm-4 col-xs-4 col-md-3 btn-primary', 'id'=>'submit']);
+?>
+</div>
+<?= $this->Form->end() ?>
+    <table class="table">
         <tbody>
+        <?php $date1 = ''; ?>
             <?php foreach ($logs as $log): ?>
-            <tr>
-                <td><?= $this->Number->format($log->id) ?></td>
-                <td><?= h($log->incurred) ?></td>
-                <td><?= $this->Number->format($log->score) ?></td>
-                <td><?= $this->Number->format($log->accum) ?></td>
-                <td><?= h($log->remark) ?></td>
+            <?php if ($log->incurred->i18nFormat('yyyy-MM-dd HH') != $date1): ?>
+				<?php $date1 = $log->incurred->i18nFormat('yyyy-MM-dd HH'); ?>
+			<tr>
+                <th style="vertical-align: middle" rowspan="<?= $count[$date1] ?>"><?= $log->incurred->i18nFormat('yyyy-MM-dd HH') ?></th>
+			<?php endif;?>
                 <td><?= $log->has('person') ? $this->Html->link($log->person->name, ['controller' => 'Persons', 'action' => 'view', $log->person->id]) : '' ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $log->id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $log->id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $log->id], ['confirm' => __('Are you sure you want to delete # {0}?', $log->id)]) ?>
-                </td>
+                <td><?= $this->Number->format($log->score) ?>
+                ->
+                <?= $this->Number->format($log->accum) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <div class="paginator">
-        <ul class="pagination">
-            <?= $this->Paginator->first('<< ' . __('first')) ?>
-            <?= $this->Paginator->prev('< ' . __('previous')) ?>
-            <?= $this->Paginator->numbers() ?>
-            <?= $this->Paginator->next(__('next') . ' >') ?>
-            <?= $this->Paginator->last(__('last') . ' >>') ?>
-        </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
-    </div>
-</div>
+<script>
+
+var btn_classes = ['btn-default','btn-success'];
+
+function updateBtnClass(btn) {
+	var value = $('#id-' + btn.data('pid')).val();
+	btn.removeClass (function (index, className) {
+		cl = (className.match(/(^|\s)btn-\S+/) || []).join(' ');
+		//console.log("Classes to remove: "+cl);
+		return cl;
+	});
+	if (value == 0 || value == 1) {
+		cl = btn_classes[value];
+		//console.log("Class to add: "+cl);
+		btn.addClass(cl);
+	}
+	else {
+		//console.log("Class to add: btn-warning");
+		btn.addClass('btn-warning');
+	}
+}
+
+// change submit button disable status
+function updateSubmit() {
+	var nEat = 0;
+	var nWash = 0;
+	$("input[name^='id_']").each(function (i, btn) {
+		v = parseInt($(btn).val());
+		if (v < 0)
+			nWash ++;
+		else if (v==1)
+			nEat++;
+	});
+	if (nWash == 1 && nEat > 0) {
+		$("#submit").show();
+	}
+	else
+		$("#submit").hide();
+}
+
+// Find the pid of the washing guy
+function findWash() {
+	var pid = 0;
+	$("input[name^='id_']").each(function (i, btn) {
+		if (parseInt($(btn).val()) < 0) 
+			pid = parseInt($(btn).attr('name').substr(3));
+	});
+	console.log("Washing guy "+pid);
+	return pid;
+}
+
+// On load function
+$(function() {
+	/* update all button classes */
+	$("button").each(function (i, btn) {
+		updateBtnClass($(btn));
+	});
+	updateSubmit();
+	$("#incurred").datepicker({ dateFormat: "yy-mm-dd",
+		onClose: function() { $("#change-date").submit() 
+	}});
+	$("button").click(function (event) {
+<?php
+		/* each button has data-pid = person_id 
+		input_v hidden field related to this button
+		old_v current value of input_v
+		new_v value to be set to input_v
+		*/
+?>
+		var input_v = $('#id-' + $(this).data('pid'));
+		var new_v;
+		var old_v = input_v.val();
+		if (old_v == 0) {
+			new_v = 1;
+		}
+		else if (old_v < 0)
+			new_v = 0;
+		else { // old_v==1
+			new_v = (0 == findWash()) ? -1 : 0;
+		}
+		input_v.val(new_v);
+		/* update all button classes */
+		$("button").each(function (i, btn) {
+			updateBtnClass($(btn));
+		});
+		updateSubmit();
+		var name = $(this).html().substr(0, $(this).html().indexOf(':'));
+		$(this).html(name + " :"+ (new_v < 0 ? 'W' : new_v));
+	});
+});
+</script>

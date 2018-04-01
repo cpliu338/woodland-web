@@ -11,7 +11,7 @@ use Cake\ORM\Entity;
  * @property float $score
  * @property float $accum
  * @property string $remark
- * @property int $persons_id
+ * @property int $person_id
  *
  * @property \App\Model\Entity\Person $person
  */
@@ -32,7 +32,7 @@ class Log extends Entity
         'score' => true,
         'accum' => true,
         'remark' => true,
-        'persons_id' => true,
+        'person_id' => true,
         'person' => true
     ];
 }

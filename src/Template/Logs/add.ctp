@@ -21,7 +21,7 @@
             echo $this->Form->control('score');
             echo $this->Form->control('accum');
             echo $this->Form->control('remark');
-            echo $this->Form->control('persons_id', ['options' => $persons]);
+            echo $this->Form->control('person_id', ['options' => $persons]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
