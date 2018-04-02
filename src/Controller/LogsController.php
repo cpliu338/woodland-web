@@ -29,35 +29,88 @@ class LogsController extends AppController
 			$incurred->timezone = 'Asia/Hong_Kong';
 			$log->incurred = $incurred;
 			$meal = $incurred->format('H');
+			if ($meal < 13) 
+				$meal = 9;
+			else if ($meal > 18)
+				$meal = 19;
+			else
+				$meal = 13;
     	}
     	else {
     		$incurred = new Time(\DateTime::createFromFormat('Y-m-d', $q));
+			$incurred->timezone = 'Asia/Hong_Kong';
     		$meal = $this->request->query('meal');
     		$meal = empty($meal) || ($meal != 9 && $meal != 13) ? 19 : $meal;
     	}
+    	$log->meal = $meal;
     	$incurred->hour($meal);
     	$incurred->minute(0);
     	$incurred->second(0);
     	
+    	$entities = [];
+        if ($this->request->is('post')) {
+        	// delete old data for this date
+        	$this->Logs->deleteAll(['incurred'=>$incurred]);
+        	
+        	$remark = $incurred->i18nFormat('yyyy-MM-dd HH');
+        	$template = ['incurred'=>$incurred, 'remark'=>$remark];
+        	$wash_id = 0;
+        	$eat_count = 0;
+        	
+        	foreach ($people as $person) {
+				// look up accumulated score
+				$recent = $this->Logs->find()->where(['incurred <'=>$incurred, 'person_id'=>$person->id])->order('incurred')->last();
+				
+        		$score = $this->request->data("id_{$person->id}");
+        		if ($score == 1) {
+        			$entity = $this->Logs->newEntity($template);
+        			$entity->person_id = $person->id;
+        			$entity->score = 1;
+        			$entity->accum = ($recent == null ? 0 : $recent->accum) + 1;
+        			$eat_count++;
+        			$this->Logs->save($entity);
+        		}
+        		else if ($score < 0) {
+        			$wash_id = $person->id;
+        		}
+        	}
+        	if ($wash_id > 0) {
+				$recent = $this->Logs->find()->where(['incurred <'=>$incurred, 'person_id'=>$wash_id])->order('incurred')->last();
+				$entity = $this->Logs->newEntity($template);
+				$entity->person_id = $wash_id;
+				$entity->score = 0 - $eat_count;
+				$entity->accum = ($recent == null ? 0 : $recent->accum) - $eat_count;
+				$this->Logs->save($entity);
+        	}
+        	$this->Flash->success($remark . __(' has been saved.'));
+        }
+        
 		$log->incurred = $incurred;
-    	foreach ($people as $person) {
-    		$person->score = 0;
+		// populate this meal's scores
+    	$meals = [];
+    	foreach ($this->Logs->find()->where(['incurred'=>$incurred]) as $this_meal) {
+    		$meals[$this_meal->person_id] = $this_meal->score;
     	}
-    	// person id of the washing person
+    	foreach ($people as $person) {
+    		$person->score = array_key_exists($person->id, $meals) ? $meals[$person->id] : 0;
+    	}
+    	// $meals reused here
     	$meals = ['9'=>'9 AM', '13'=>'1 PM', '19'=>'7 PM'];
     	//debug($log);
     	$date1 = '';
     	$logs = $this->Logs->find()->contain(['Persons'])->
-        	where(['incurred <'=>$incurred])->order(['incurred DESC', 'person_id']);
+        	where(['incurred <='=>$incurred])->order(['incurred DESC', 'person_id'])
+        	// this should be reviewed
+        	->limit(20);
 		$count = [];
-        foreach ($logs
-				as $l) {
+        foreach ($logs as $l) {
 			if ($l->incurred->i18nFormat('yyyy-MM-dd HH') != $date1) {
 				$date1 = $l->incurred->i18nFormat('yyyy-MM-dd HH');
 				$count[$date1] = 1;
 			}
 			else
 				$count[$date1] = $count[$date1]+1;
+			if (count($count) > 4) break;
 		}
 
         $this->set(compact('logs', 'count', 'people', 'log', 'meals'));
