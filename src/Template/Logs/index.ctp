@@ -10,7 +10,7 @@ button, #submit {
 	padding: 1em; margin: 1em;
 }
 #incurred, #meal {
-	font-size: x-large;
+	font-size: large;
 }
 </style>
 <?php
@@ -18,18 +18,13 @@ button, #submit {
 	echo $this->Form->create($log, ['type'=>'get', 'id'=>'change-date']);
 ?>
 <div class="row">
-	<div class='col-sm-3 col-xs-3 col-md-2'>
+	<div class='col-sm-6 col-xs-12 col-md-3'>
 		<?= $this->Form->input('incurred', ['value'=>$log->incurred->format('Y-m-d'),
 			'type'=>'text']) ?>
 	</div>
-	<div class='col-sm-3 col-xs-3 col-md-2'>
+	<div class='col-sm-6 col-xs-12 col-md-3'>
 		<?= $this->Form->input('meal', ['type'=>'select', 'options'=>$meals]) ?>
 	</div>
-	<!--
-	<div class='col-sm-3 col-xs-3 col-md-2'>
-		<?= $this->Form->submit('Change') ?>
-	</div>
-	-->
 </div>
 <?php
 		echo $this->Form->end();
@@ -60,7 +55,7 @@ button, #submit {
 			<tr>
                 <th style="vertical-align: middle" rowspan="<?= $count[$date1] ?>">
                 	<?= $log->incurred->i18nFormat('MM-dd') ?><br>
-                	<?= $log->incurred->i18nFormat('HH') ?><br>
+                	<?= $log->incurred->i18nFormat('h a') ?><br>
                 	<?= $log->incurred->i18nFormat('EEE') ?>
 				</th>
 			<?php endif;?>
