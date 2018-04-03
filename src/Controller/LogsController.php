@@ -57,6 +57,9 @@ class LogsController extends AppController
         	$wash_id = 0;
         	$eat_count = 0;
         	
+        	if ($this->Logs->find()->where(['incurred >'=>$incurred])->count() > 0) {
+        		$this->Flash->warning( __('There are more recent records, accumulated scores not updated'));
+        	}
         	foreach ($people as $person) {
 				// look up accumulated score
 				$recent = $this->Logs->find()->where(['incurred <'=>$incurred, 'person_id'=>$person->id])->order('incurred')->last();
@@ -114,6 +117,37 @@ class LogsController extends AppController
 		}
 
         $this->set(compact('logs', 'count', 'people', 'log', 'meals'));
+    }
+    
+    public function more() {
+    	if ($this->request->is('get')) {
+    		$q = $this->request->query('earlier');
+    		if (!empty($q)) {
+    			$incurred = new Time(\DateTime::createFromFormat('Y-m-d', $q));
+    			$incurred->timezone = 'Asia/Hong_Kong';
+    			$meal = $this->request->query('meal');
+    			$meal = empty($meal) || ($meal != 9 && $meal != 13) ? 19 : $meal;
+    		}
+			$incurred->hour($meal);
+			$incurred->minute(0);
+			$incurred->second(0);
+			$date1 = '';
+			$logs = $this->Logs->find()->contain(['Persons'])->
+				where(['incurred <'=>$incurred])->order(['incurred DESC', 'person_id'])
+				// this should be reviewed
+				->limit(20);
+			$count = [];
+			foreach ($logs as $l) {
+				if ($l->incurred->i18nFormat('yyyy-MM-dd HH') != $date1) {
+					$date1 = $l->incurred->i18nFormat('yyyy-MM-dd HH');
+					$count[$date1] = 1;
+				}
+				else
+					$count[$date1] = $count[$date1]+1;
+				if (count($count) > 4) break;
+			}
+			$this->set(compact('logs', 'count'));
+    	}
     }
 
     /**

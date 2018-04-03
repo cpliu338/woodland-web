@@ -57,6 +57,8 @@ button, #submit {
                 	<?= $log->incurred->i18nFormat('MM-dd') ?><br>
                 	<?= $log->incurred->i18nFormat('h a') ?><br>
                 	<?= $log->incurred->i18nFormat('EEE') ?>
+                	<?php $earlier = $log->incurred->i18nFormat('yyyy-MM-dd');
+                	$meal = $log->incurred->i18nFormat('HH') ?>
 				</th>
 			<?php endif;?>
                 <td><?= $log->has('person') ? $this->Html->link($log->person->name, ['controller' => 'Persons', 'action' => 'view', $log->person->id]) : '' ?></td>
@@ -66,6 +68,13 @@ button, #submit {
             </tr>
             <?php endforeach; ?>
         </tbody>
+        <tfoot><tr>
+        	<td>
+        	<?= $this->Form->button('More', [ 'class'=>'btn btn-primary',
+			'id'=>'more',
+			'type'=>'button'])?>
+        	</td>
+		</tr></tfoot>
     </table>
 <script>
 
@@ -121,7 +130,7 @@ function findWash() {
 // On load function
 $(function() {
 	/* update all button classes */
-	$("button").each(function (i, btn) {
+	$("button[data-pid]").each(function (i, btn) {
 		updateBtnClass($(btn));
 	});
 	updateSubmit();
@@ -131,7 +140,22 @@ $(function() {
 	$("#meal").change(function() {
 		$("#change-date").submit();
 	});
-	$("button").click(function (event) {
+	$("#more").click(function (event) {
+		$.ajax({
+			url: '/logs/more',
+			type: "get", 
+			data: {
+				earlier: '<?= $earlier?>',
+				meal: '<?= $meal ?>'
+			}
+		}).done(function(data) {
+				$("tbody").append(data);
+		}).fail(function(xhr) {
+    			$("tbody").append("<tr><td>error</td></tr>");
+		});
+	});
+	// click event for buttons having data-pid attribute
+	$("button[data-pid]").click(function (event) {
 <?php
 		/* each button has data-pid = person_id 
 		input_v hidden field related to this button
