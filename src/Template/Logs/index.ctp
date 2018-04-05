@@ -62,9 +62,14 @@ button, #submit {
 				</th>
 			<?php endif;?>
                 <td><?= $log->has('person') ? $this->Html->link($log->person->name, ['controller' => 'Persons', 'action' => 'view', $log->person->id]) : '' ?></td>
-                <td><?= $this->Number->format($log->score) ?>
-                ->
-                <?= $this->Number->format($log->accum) ?></td>
+                <td>
+                <?= $this->Number->format($log->accum - $log->score) ?>
+<?php if ($this->Number->format($log->score)>0): ?>                
+                + <?= $this->Number->format($log->score) ?> -> <?= $this->Number->format($log->accum) ?>
+<?php elseif ($this->Number->format($log->score)<0): ?>
+                - <?= $this->Number->format(0 - $log->score) ?> -> <?= $this->Number->format($log->accum) ?>
+<?php endif; ?>
+                </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
