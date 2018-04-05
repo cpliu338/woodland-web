@@ -33,6 +33,8 @@ class PersonsTable extends Table
         $this->setTable('persons');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
+        
+        $this->hasMany('Logs');
     }
 
     /**

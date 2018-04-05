@@ -1,4 +1,3 @@
-
 <?php $date1 = ''; ?>
 	<?php foreach ($logs as $log): ?>
 	<?php if ($log->incurred->i18nFormat('yyyy-MM-dd HH') != $date1): ?>
@@ -19,3 +18,4 @@
 		<?= $this->Number->format($log->accum) ?></td>
 	</tr>
 	<?php endforeach; ?>
+###{"earlier":"<?= $earlier?>", "meal":"<?= $meal?>"}

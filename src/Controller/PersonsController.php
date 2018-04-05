@@ -37,8 +37,8 @@ class PersonsController extends AppController
         $person = $this->Persons->get($id, [
             'contain' => []
         ]);
-
-        $this->set('person', $person);
+        $logs = $this->Persons->Logs->find()->where(['person_id'=>$id])->order('Logs.incurred DESC')->limit(20);
+        $this->set(compact('person', 'logs'));
     }
 
     /**

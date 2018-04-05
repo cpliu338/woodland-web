@@ -129,6 +129,9 @@ function findWash() {
 
 // On load function
 $(function() {
+	/* Save earlier and meal for future use */
+	$("tbody").data('earlier', '<?= $earlier?>');
+	$("tbody").data('meal', '<?= $meal?>');
 	/* update all button classes */
 	$("button[data-pid]").each(function (i, btn) {
 		updateBtnClass($(btn));
@@ -145,11 +148,16 @@ $(function() {
 			url: '/logs/more',
 			type: "get", 
 			data: {
-				earlier: '<?= $earlier?>',
-				meal: '<?= $meal ?>'
+				earlier: $("tbody").data('earlier'),
+				meal: $("tbody").data('meal')
 			}
 		}).done(function(data) {
-				$("tbody").append(data);
+				//$("tbody").append(data);
+				var i = data.indexOf("###");
+				$("tbody").append(data.substr(0,i));
+				var json = JSON.parse(data.substr(i+3));
+				$("tbody").data('earlier', json.earlier);
+				$("tbody").data('meal', json.meal);
 		}).fail(function(xhr) {
     			$("tbody").append("<tr><td>error</td></tr>");
 		});
