@@ -70,7 +70,7 @@ class LogsController extends AppController
         			$entity->person_id = $person->id;
         			$entity->score = $score;
         			$entity->accum = ($recent == null ? 0 : $recent->accum) + $score;
-        			$eat_count++;
+        			$eat_count = $eat_count+$score;
         			$this->Logs->save($entity);
         		}
         		else if ($score < 0) {
