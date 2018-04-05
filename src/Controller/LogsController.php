@@ -65,11 +65,11 @@ class LogsController extends AppController
 				$recent = $this->Logs->find()->where(['incurred <'=>$incurred, 'person_id'=>$person->id])->order('incurred')->last();
 				
         		$score = $this->request->data("id_{$person->id}");
-        		if ($score == 1) {
+        		if ($score == 0 || $score == 1) {
         			$entity = $this->Logs->newEntity($template);
         			$entity->person_id = $person->id;
-        			$entity->score = 1;
-        			$entity->accum = ($recent == null ? 0 : $recent->accum) + 1;
+        			$entity->score = $score;
+        			$entity->accum = ($recent == null ? 0 : $recent->accum) + $score;
         			$eat_count++;
         			$this->Logs->save($entity);
         		}
