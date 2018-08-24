@@ -225,7 +225,7 @@ class LogsController extends AppController
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
-    {
+    { // DELETE only last date's data
         if ($this->Logs->deleteAll(['incurred'=>$this->lastLogDate()])) {
             $this->Flash->success(__('The most recent logs have been deleted.'));
         } else {
