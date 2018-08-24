@@ -226,13 +226,6 @@ class LogsController extends AppController
      */
     public function delete($id = null)
     {
-/*
-		$last = $this->lastLogDate();
-		$d = $last->nice();
-        $this->request->allowMethod(['post', 'delete']);
-                    $this->Flash->error("The logs on $d could not be deleted. Please, try again.");
-        $log = $this->Logs->get($id);
-*/
         if ($this->Logs->deleteAll(['incurred'=>$this->lastLogDate()])) {
             $this->Flash->success(__('The most recent logs have been deleted.'));
         } else {
