@@ -115,8 +115,13 @@ class LogsController extends AppController
 				$count[$date1] = $count[$date1]+1;
 			if (count($count) > 4) break;
 		}
-
-        $this->set(compact('logs', 'count', 'people', 'log', 'meals'));
+		$last = $this->lastLogDate();
+        $this->set(compact('logs', 'count', 'people', 'log', 'meals', 'last'));
+    }
+    
+    private function lastLogDate() {
+    	$lastLog = $this->Logs->find()->order(['incurred DESC'])->first();
+    	return ($lastLog==null) ? null : $lastLog->incurred;
     }
     
     public function more() {
@@ -221,14 +226,18 @@ class LogsController extends AppController
      */
     public function delete($id = null)
     {
+/*
+		$last = $this->lastLogDate();
+		$d = $last->nice();
         $this->request->allowMethod(['post', 'delete']);
+                    $this->Flash->error("The logs on $d could not be deleted. Please, try again.");
         $log = $this->Logs->get($id);
-        if ($this->Logs->delete($log)) {
-            $this->Flash->success(__('The log has been deleted.'));
+*/
+        if ($this->Logs->deleteAll(['incurred'=>$this->lastLogDate()])) {
+            $this->Flash->success(__('The most recent logs have been deleted.'));
         } else {
-            $this->Flash->error(__('The log could not be deleted. Please, try again.'));
+            $this->Flash->error(__('The logs could not be deleted. Please, try again.'));
         }
-
         return $this->redirect(['action' => 'index']);
     }
 }

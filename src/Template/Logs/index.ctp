@@ -48,26 +48,32 @@ button, #submit {
     <table class="table">
         <tbody>
         <?php $date1 = ''; ?>
-            <?php foreach ($logs as $log): ?>
-            <?php if ($log->incurred->i18nFormat('yyyy-MM-dd HH') != $date1): ?>
-				<?php $date1 = $log->incurred->i18nFormat('yyyy-MM-dd HH'); ?>
+            <?php foreach ($logs as $l): ?>
+            <?php if ($l->incurred->i18nFormat('yyyy-MM-dd HH') != $date1): ?>
+				<?php $date1 = $l->incurred->i18nFormat('yyyy-MM-dd HH'); ?>
             	<?php if (!array_key_exists($date1, $count) || $count[$date1]==1) break; ?>
 			<tr>
                 <th style="vertical-align: middle" rowspan="<?= $count[$date1] ?>">
-                	<?= $log->incurred->i18nFormat('MM-dd') ?><br>
-                	<?= $log->incurred->i18nFormat('h a') ?><br>
-                	<?= $log->incurred->i18nFormat('EEE') ?>
-                	<?php $earlier = $log->incurred->i18nFormat('yyyy-MM-dd');
-                	$meal = $log->incurred->i18nFormat('HH') ?>
+                	<?= $l->incurred->i18nFormat('MM-dd') ?><br>
+                	<?= $l->incurred->i18nFormat('h a') ?><br>
+                	<?= $l->incurred->i18nFormat('EEE') ?>
+                	<?php $earlier = $l->incurred->i18nFormat('yyyy-MM-dd');
+                	$meal = $l->incurred->i18nFormat('HH') ?>
+                	<?php if ($last == $l->incurred): ?>
+                		<?= $this->Form->postLink("<i class='glyphicon glyphicon-remove'></i>",
+                			['action'=>'delete'], ['class'=>"btn btn-danger", 'escape'=>false])
+                		?>
+                	<!-- $log->incurred->nice() -->
+                	<?php endif;?>
 				</th>
 			<?php endif;?>
-                <td><?= $log->has('person') ? $this->Html->link($log->person->name, ['controller' => 'Persons', 'action' => 'view', $log->person->id]) : '' ?></td>
+                <td><?= $l->has('person') ? $this->Html->link($l->person->name, ['controller' => 'Persons', 'action' => 'view', $l->person->id]) : '' ?></td>
                 <td>
-                <?= $this->Number->format($log->accum - $log->score) ?>
-<?php if ($this->Number->format($log->score)>0): ?>                
-                + <?= $this->Number->format($log->score) ?> -> <?= $this->Number->format($log->accum) ?>
-<?php elseif ($this->Number->format($log->score)<0): ?>
-                - <?= $this->Number->format(0 - $log->score) ?> -> <?= $this->Number->format($log->accum) ?>
+                <?= $this->Number->format($l->accum - $l->score) ?>
+<?php if ($this->Number->format($l->score)>0): ?>                
+                + <?= $this->Number->format($l->score) ?> -> <?= $this->Number->format($l->accum) ?>
+<?php elseif ($this->Number->format($l->score)<0): ?>
+                - <?= $this->Number->format(0 - $l->score) ?> -> <?= $this->Number->format($l->accum) ?>
 <?php endif; ?>
                 </td>
             </tr>
