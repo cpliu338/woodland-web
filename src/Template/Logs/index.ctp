@@ -61,7 +61,7 @@ button, #submit {
                 	$meal = $l->incurred->i18nFormat('HH') ?>
                 	<?php if ($last == $l->incurred): ?>
                 		<?= $this->Form->postLink("<i class='glyphicon glyphicon-remove'></i>",
-                			['action'=>'delete'], ['class'=>"btn btn-danger", 'escape'=>false])
+                			['action'=>'delete'], ['class'=>"btn btn-danger", 'escape'=>false, 'confirm'=>'Are you sure?'])
                 		?>
                 	<!-- $log->incurred->nice() -->
                 	<?php endif;?>
