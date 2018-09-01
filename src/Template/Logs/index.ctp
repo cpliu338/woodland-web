@@ -63,7 +63,6 @@ button, #submit {
                 		<?= $this->Form->postLink("<i class='glyphicon glyphicon-remove'></i>",
                 			['action'=>'delete'], ['class'=>"btn btn-danger", 'escape'=>false, 'confirm'=>'Are you sure?'])
                 		?>
-                	<!-- $log->incurred->nice() -->
                 	<?php endif;?>
 				</th>
 			<?php endif;?>
