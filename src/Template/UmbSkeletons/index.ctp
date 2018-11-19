@@ -3,28 +3,6 @@
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\UmbSkeleton[]|\Cake\Collection\CollectionInterface $umbSkeletons
  */
-$this->start('css');
-// see https://clrs.cc/ for colors below
-?>
-<style>
-.tag-1, .tag-1:hover {
-    background: #001f3f;
-    color: hsla(210, 100%, 75%, 1.0);
-}
-.tag-2, .tag-2:hover {
-    background: #0074d9;
-    color: hsla(210, 100%, 85%, 1.0);
-}
-.tag-3, .tag-3:hover {
-    background: #7fdbff;
-    color: hsla(197, 100%, 20%, 1.0);
-}
-.tag-4, .tag-4:hover {
-    background: #39cccc;
-}
-</style>
-<?php
-$this->end();
 ?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
@@ -33,14 +11,7 @@ $this->end();
 </nav>
 <div class="umbSkeletons index large-9 medium-8 columns content">
     <h3><?= __('Umb Skeletons') ?></h3>
-    <div id="tags">
-<?php foreach ($tags as $tag):?>
-<?php 
-	$opac = in_array($tag->id, $ids) ? 1.0 : 0.5;
-	$checked = in_array($tag->id, $ids) ? "true" : 'false';
-?>
-<button data-checked="<?=$checked?>" data-tagid="<?=$tag->id?>" style="opacity: <?=$opac?>" class="filter btn tag-<?=$tag->type?>"><?=$tag->name?></button>
-<?php endforeach; ?>    
+    <div id="tags"><?= $this->element('tag_buttons', ['ids'=>$ids]) ?>
     </div>
     <table class="table table-striped">
         <thead>
@@ -53,6 +24,11 @@ $this->end();
         <tbody id="results">
         	<?= $this->element('skeletons')?>
         </tbody>
+<?php if ($total_count > count($umbSkeletons)): ?>
+        <tfoot>               
+        <tr><td>And <?= $total_count-count($umbSkeletons)?> more</td><td></td></tr>
+        </tfoot>
+<?php endif;?>
     </table>
 </div>
 <div id="add-form">
@@ -65,13 +41,13 @@ $this->end();
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+    <?= $this->Form->end() ?>  
 </div>
 <div id="dlg-view">
 	<textarea id="dlg-text" rows="10" cols="20"></textarea>
 	<br>
 </div>
-<div id="debug"></div>
+<button id="add" class="btn btn-success glyphicon glyphicon-plus"></button>
 <script>
 $(function() {
 	$("#dlg-view").dialog({
@@ -90,7 +66,7 @@ $(function() {
 			text: "Cancel",
 			click: function() { $(this).dialog("close");},
 			icons: {primary: "ui-icon-locked"}
-		}]
+		}]                       
 	});
 	$(document).on("click", ".view", function() {
 		$.ajax({
@@ -102,6 +78,9 @@ $(function() {
 			$("#dlg-view").dialog({title: data.umbSkeleton.name});
 			$("#dlg-view").dialog("open");
 		});
+	});                              
+	$("#add").click(function() {
+		$("#add-form").dialog("open");
 	});
 	$(".filter").click(function() {
 		var checked = $(this).data("checked");
@@ -114,18 +93,12 @@ $(function() {
 		});
 		$.ajax({
 			data: {ids:ar},
-			url: "/umb-skeletons/filter",
+			url: "/umb-skeletons/filter",                                              
 			type: "POST"
 		}).done(function(data) {
 			$("#results").empty();
 			$("#results").append(data);
 		});
-	});
-	var data = {ids:[1,3],val:"abc"};
-	$.ajax({
-		data: data,
-		url: "/umb-skeletons/filter",
-		type: "POST"
 	});
 });
 </script>

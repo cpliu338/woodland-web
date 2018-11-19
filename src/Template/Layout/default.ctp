@@ -4,7 +4,7 @@
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        Woodland duty
+        <?= empty($title) ? 'Woodland duty' : $title?>
     </title>
     <?= $this->Html->meta('icon') ?>
 
@@ -17,6 +17,7 @@
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
+    <?= $this->Html->css('home.css') ?>
 </head>
 <body>
 <header>

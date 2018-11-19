@@ -3,6 +3,7 @@
 # /config/app.php
 /config/.env
 /logs/*
+/tests/*
 /tmp/*
 .editorconfig
 .gitattributes
