@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Collection\Collection;
+use Cake\Log\Log;
 
 /**
  * UmbSkeletons Controller
@@ -36,6 +37,7 @@ class UmbSkeletonsController extends AppController
     {
     	$ids = [];
     	$tagids = $this->Cookie->read('Umb.tagids');
+    	//Log::write('debug', "Read cookie:$tagids");
     	if (!empty($tagids) && preg_match('/(\\d+\\s)*\\d+/', $tagids)) {
     		$ids = explode(' ', $tagids);
     	}
@@ -46,8 +48,10 @@ class UmbSkeletonsController extends AppController
     	);
     	*/
     	$tags = $this->UmbSkeletons->UmbTags->find()->order('type');
-		$umbSkeletons = $this->filterIds($ids);
-        $this->set(compact('umbSkeletons','tags','ids','umbSkeleton'));
+    	$arr_filtered = $this->filterIds($ids)->toArray();
+    	$total_count = count($arr_filtered);
+		$umbSkeletons = array_slice($arr_filtered, 0, 20);
+        $this->set(compact('umbSkeletons','tags','ids','umbSkeleton', 'total_count'));
     }
     
     private function filterIds(array $ids) {
@@ -62,7 +66,9 @@ class UmbSkeletonsController extends AppController
     
     public function filter() {
     	$ids = $this->request->data('ids');
-    	$this->Cookie->write('Umb.tagids', implode(' ', $ids));
+    	$cookie = implode(' ', $ids);
+    	$this->Cookie->write('Umb.tagids', $cookie);
+    	//Log::write('debug', "Written cookie:$cookie");
         /* due to bug of CakePHP, use the $umbSkeletons[] = ... to eliminate duplication 
         $umbSkeletons = [];
 		foreach ($this->UmbSkeletons->find('withTags', ['ids'=>$ids]) as $umbSkeleton) {
@@ -127,6 +133,8 @@ class UmbSkeletonsController extends AppController
             'contain' => ['UmbTags']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+        	$s = $this->request->data('umb_tags_ids');
+        	$this->request->data('umb_tags', ['_ids'=>explode(',',$s)]);
             $umbSkeleton = $this->UmbSkeletons->patchEntity($umbSkeleton, $this->request->getData());
             if ($this->UmbSkeletons->save($umbSkeleton)) {
                 $this->Flash->success(__('The umb skeleton has been saved.'));
@@ -134,9 +142,13 @@ class UmbSkeletonsController extends AppController
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The umb skeleton could not be saved. Please, try again.'));
+        	/*
+        	debug($this->request->data());
+            */
         }
-        $umbTags = $this->UmbSkeletons->UmbTags->find('list', ['limit' => 200]);
-        $this->set(compact('umbSkeleton', 'umbTags'));
+    	$tags = $this->UmbSkeletons->UmbTags->find()->order('type');
+        //$umbTags = $this->UmbSkeletons->UmbTags->find('list', ['limit' => 200]);
+        $this->set(compact('umbSkeleton', 'tags'));
     }
 
     /**

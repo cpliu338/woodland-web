@@ -17,6 +17,7 @@
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
     <?= $this->fetch('script') ?>
+    <?= $this->Html->css('home.css') ?>
 </head>
 <body>
 <header>

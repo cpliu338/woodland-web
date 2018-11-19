@@ -25,9 +25,32 @@
         <?php
             echo $this->Form->control('name');
             echo $this->Form->control('description');
-            echo $this->Form->control('umb_tags._ids', ['options' => $umbTags]);
+            echo $this->Form->control('umb_tags_ids', ['type'=>'hidden']);
+            	// ['options' => $umbTags]);
         ?>
     </fieldset>
+<?php
+	$ids = [];
+	foreach ($umbSkeleton->umb_tags as $tag) { $ids[] = $tag->id;}
+?>
+    <?= $this->element('tag_buttons', ['ids'=>$ids]) ?>
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
 </div>
+<div id="debug"></div>
+<script>
+$(function() {
+	$(".filter").click(function(ev) {
+		ev.preventDefault();
+		var checked = $(this).data("checked");
+		var opacity = checked ? 0.5 : 1.0; 
+		$(this).css("opacity", opacity);
+		$(this).data("checked", !checked);
+		var ar = [];
+		$(".filter").each(function () {
+			if ($(this).data("checked")) ar.push($(this).data("tagid"));
+		});
+		$("input[name=umb_tags_ids]").val(ar.join());
+	});	
+});
+</script>
