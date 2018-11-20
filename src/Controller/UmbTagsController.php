@@ -72,7 +72,6 @@ class UmbTagsController extends AppController
     public function edit($id = null)
     {
         $umbTag = $this->UmbTags->get($id, [
-            'contain' => ['UmbSkeletons']
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $umbTag = $this->UmbTags->patchEntity($umbTag, $this->request->getData());
@@ -84,7 +83,8 @@ class UmbTagsController extends AppController
             $this->Flash->error(__('The umb tag could not be saved. Please, try again.'));
         }
         $umbSkeletons = $this->UmbTags->UmbSkeletons->find('list', ['limit' => 200]);
-        $this->set(compact('umbTag', 'umbSkeletons'));
+        $tags = [1=>1,2=>2,3=>3,4=>4,5=>5];
+        $this->set(compact('umbTag', 'tags'));
     }
 
     /**

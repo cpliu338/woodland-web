@@ -25,10 +25,21 @@
         <?php
             echo $this->Form->control('name');
             echo $this->Form->control('description');
-            echo $this->Form->control('type');
-            echo $this->Form->control('umb_skeletons._ids', ['options' => $umbSkeletons]);
+            echo $this->Form->control('type', ['type'=>'select', 'options'=>$tags]);
         ?>
+    <div id="hint" class="btn tag-<?=$umbTag->type?>"><?=$umbTag->name?></div>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>
     <?= $this->Form->end() ?>
 </div>
+<script>
+$(function() {
+	$("input[name=name]").keyup(function() {
+		$("#hint").text($(this).val());
+	});
+	$("select[name=type]").change(function() {
+		$("#hint").attr('class', "btn tag-"+$(this).val());
+	})
+	
+});
+</script>

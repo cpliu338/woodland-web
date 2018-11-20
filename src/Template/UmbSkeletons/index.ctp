@@ -4,13 +4,8 @@
  * @var \App\Model\Entity\UmbSkeleton[]|\Cake\Collection\CollectionInterface $umbSkeletons
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li><?= $this->Html->link(__('List Umb Tags'), ['controller' => 'UmbTags', 'action' => 'index']) ?></li>
-    </ul>
-</nav>
 <div class="umbSkeletons index large-9 medium-8 columns content">
-    <h3><?= __('Umb Skeletons') ?></h3>
+    <h3 class="glyphicon glyphicon-home"><?= __('Skeletons') ?></h3>
     <div id="tags"><?= $this->element('tag_buttons', ['ids'=>$ids]) ?>
     </div>
     <table class="table table-striped">
@@ -47,7 +42,11 @@
 	<textarea id="dlg-text" rows="10" cols="20"></textarea>
 	<br>
 </div>
-<button id="add" class="btn btn-success glyphicon glyphicon-plus"></button>
+<button id="add" class="btn btn-success glyphicon glyphicon-plus" style="margin-right: 4em"></button>
+<?php
+	$v = "<i class='glyphicon glyphicon-tags btn btn-warning'></i>";
+	echo $this->Html->link($v, ['controller' => 'UmbTags', 'action' => 'index'], ['escape'=>false]) 
+?>
 <script>
 $(function() {
 	$("#dlg-view").dialog({
