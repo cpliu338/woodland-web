@@ -83,7 +83,9 @@ class UmbTagsController extends AppController
             $this->Flash->error(__('The umb tag could not be saved. Please, try again.'));
         }
         $umbSkeletons = $this->UmbTags->UmbSkeletons->find('list', ['limit' => 200]);
-        $tags = [1=>1,2=>2,3=>3,4=>4,5=>5];
+        $tags = [];
+        for ($i=1; $i<=16; $i++) 
+        	$tags[$i]=$i;
         $this->set(compact('umbTag', 'tags'));
     }
 

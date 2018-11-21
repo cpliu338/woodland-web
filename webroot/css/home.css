@@ -1,15 +1,62 @@
-.tag-1, .tag-1:hover {
+.tag-1, .tag-1:hover, tag-1:active {
     background: #001f3f;
     color: hsla(210, 100%, 75%, 1.0);
 }
-.tag-2, .tag-2:hover {
+.tag-2, .tag-2:hover, tag-2:active {
     background: #0074d9;
     color: hsla(210, 100%, 85%, 1.0);
 }
-.tag-3, .tag-3:hover {
+.tag-3, .tag-3:hover, tag-3:active {
     background: #7fdbff;
     color: hsla(197, 100%, 20%, 1.0);
 }
-.tag-4, .tag-4:hover {
+.tag-4, .tag-4:hover, tag-4:active {
     background: #39cccc;
+}
+.tag-5, .tag-5:hover, tag-5:active {
+    background: #3d9970;
+    color: hsla(153, 43%, 15%, 1.0);
+}
+.tag-6, .tag-6:hover, tag-6:active {
+    background: #2ecc40;
+    color: hsla(127, 63%, 15%, 1.0);
+}
+.tag-7, .tag-7:hover, tag-7:active {
+    background: #01ff70;
+    color: hsla(146, 100%, 20%, 1.0);
+}
+.tag-8, .tag-8:hover, tag-8:active {
+    background: #ffdc00;
+    color: hsla(52, 100%, 20%, 1.0);
+}
+.tag-9, .tag-9:hover, tag-9:active {
+    background: #ff851b;
+    color: hsla(28, 100%, 20%, 1.0);
+}
+
+.tag-10, .tag-10:hover, tag-10:active {
+    background: #ff4136;
+    color: hsla(3, 100%, 25%, 1.0);
+}
+.tag-11, .tag-11:hover, tag-11:active {
+    background: #85144b;
+    color: hsla(331, 74%, 70%, 1.0);
+}
+.tag-12, .tag-12:hover, tag-12:active {
+    background: #f012be;
+    color: hsla(314, 88%, 21%, 1.0);
+}
+.tag-13, .tag-13:hover, tag-13:active {
+    background: #b10dc9;
+    color: hsla(292, 88%, 82%, 1.0);
+}
+.tag-14, .tag-14:hover, tag-14:active {
+    background: #111111;
+    color: silver;
+}
+.tag-15, .tag-15:hover, tag-15:active {
+    background: #aaaaaa;
+}
+.tag-16, .tag-16:hover, tag-16:active {
+    background: #dddddd;
 }
