@@ -27,7 +27,7 @@
             <?php foreach ($umbTags as $umbTag): ?>
             <tr>
                 <td><?= $this->Number->format($umbTag->type) ?></td>
-                <td><?= h($umbTag->name) ?></td>
+                <td><button class="btn tag-<?=$umbTag->type?>"><?= h($umbTag->name) ?></button></td>
                 <td><?= h($umbTag->modified) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('View'), ['action' => 'view', $umbTag->id]) ?>

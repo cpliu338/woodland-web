@@ -34,7 +34,7 @@
 	foreach ($umbSkeleton->umb_tags as $tag) { $ids[] = $tag->id;}
 ?>
     <?= $this->element('tag_buttons', ['ids'=>$ids]) ?>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button('', ['class'=>'glyphicon glyphicon-check btn btn-success']) ?>
     <?= $this->Form->end() ?>
 </div>
 <div id="debug"></div>

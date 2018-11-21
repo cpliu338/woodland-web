@@ -29,7 +29,7 @@
         ?>
     <div id="hint" class="btn tag-<?=$umbTag->type?>"><?=$umbTag->name?></div>
     </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
+    <?= $this->Form->button('', ['class'=>'glyphicon glyphicon-check btn btn-success']) ?>
     <?= $this->Form->end() ?>
 </div>
 <script>
