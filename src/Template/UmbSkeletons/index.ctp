@@ -13,6 +13,7 @@
             <tr>
                 <th scope="col"><?= __('name') ?></th>
                 <th scope="col"><?= __('tags') ?></th>
+                <th scope="col"><?= __('description') ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>

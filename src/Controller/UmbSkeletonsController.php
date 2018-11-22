@@ -134,7 +134,7 @@ class UmbSkeletonsController extends AppController
             $umbSkeleton = $this->UmbSkeletons->patchEntity($umbSkeleton, $this->request->getData());
             if ($this->UmbSkeletons->save($umbSkeleton)) {
                 $this->Flash->success(__('The umb skeleton has been saved.'));
-
+                 
                 return $this->redirect(['action' => 'index']);
             }
             $this->Flash->error(__('The umb skeleton could not be saved. Please, try again.'));
@@ -142,6 +142,11 @@ class UmbSkeletonsController extends AppController
         	debug($this->request->data());
             */
         }
+        $ar = [];
+        foreach ($umbSkeleton->umb_tags as $t) {
+        	$ar[] = $t->id;
+        }    
+        $umbSkeleton->umb_tags_ids = implode(',',$ar);
     	$tags = $this->UmbSkeletons->UmbTags->find()->order('type');
         //$umbTags = $this->UmbSkeletons->UmbTags->find('list', ['limit' => 200]);
         $this->set(compact('umbSkeleton', 'tags'));
