@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `umb_skeletons`;
+DROP TABLE IF EXISTS umb_skeletons;
 CREATE TABLE `umb_skeletons` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
