@@ -4,6 +4,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Collection\Collection;
+use Cake\Network\Http\Client;
 
 /**
  * UmbSkeletons Controller
@@ -49,6 +50,7 @@ class UmbSkeletonsController extends AppController
     	$arr_filtered = $this->filterIds($ids)->toArray();
     	$total_count = count($arr_filtered);
 		$umbSkeletons = array_slice($arr_filtered, 0, 20);
+		//debug($umbSkeletons);
         $this->set(compact('umbSkeletons','tags','ids','umbSkeleton', 'total_count'));
     }
     
@@ -72,8 +74,8 @@ class UmbSkeletonsController extends AppController
 		}
 		*/
 		$umbSkeletons = $this->filterIds($ids);
-    	$this->set(['umbSkeletons'=>$umbSkeletons,
-    		'_serialize'=> ['umbSkeletons']
+    	$this->set(['umbSkeletons'=>$umbSkeletons, 'ids'=>$ids,
+    		'_serialize'=> ['umbSkeletons','ids']
     		]);
     }
 
@@ -93,6 +95,31 @@ class UmbSkeletonsController extends AppController
     	$this->set(['umbSkeleton'=>$umbSkeleton,
     		'_serialize'=> ['umbSkeleton']
     		]);
+    }
+    
+    public function login() {
+    	/*
+        $http = new Client();
+        $response = $http->get('http://192.168.192.111/attendance.php');
+        $secret = $response->body('json_decode');
+        */
+        $secret = $this->request->data('secret');
+        /*
+ curl -i -d "secret=Abc" -H "Accept: application/json" "http://localhost:8765/umb-skeletons/login"
+HTTP/1.1 200 OK
+Host: localhost:8765
+Connection: close
+X-Powered-By: PHP/7.0.32-0ubuntu0.16.04.1
+Content-Type: application/json; charset=UTF-8
+X-DEBUGKIT-ID: 957b0bf2-e09a-4ff0-b3fa-35c39846772b
+
+{
+    "secret": "Abc"
+}
+		*/
+        $this->set(['secret'=>$secret,
+        '_serialize'=>['secret']
+        ]);
     }
 
     /**

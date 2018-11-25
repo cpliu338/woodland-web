@@ -60,3 +60,9 @@
 .tag-16, .tag-16:hover, tag-16:active {
     background: #dddddd;
 }
+td.imperfect-match {
+	color: gray
+}
+button.imperfect-match {
+	opacity:0.5
+}

@@ -1,1 +1,1 @@
-<?= $this->element('skeletons')?>
+<?= $this->element('skeletons', ['skeletons'=>$umbSkeletons,'selected_tag_ids'=>$ids])?>

@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <tbody id="results">
-        	<?= $this->element('skeletons')?>
+        	<?= $this->element('skeletons', ['skeletons'=>$umbSkeletons,'selected_tag_ids'=>$ids])?>
         </tbody>
 <?php if ($total_count > count($umbSkeletons)): ?>
         <tfoot>               
