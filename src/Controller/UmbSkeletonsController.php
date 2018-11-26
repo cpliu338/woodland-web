@@ -103,7 +103,30 @@ class UmbSkeletonsController extends AppController
         $response = $http->get('http://192.168.192.111/attendance.php');
         $secret = $response->body('json_decode');
         */
-        $secret = $this->request->data('secret');
+        if (//$this->request->is('ajax') && 
+        	$this->request->is('post')) {
+			try {
+        	$website = $this->request->data('website');
+			$http = new Client();
+				$response = $http->get("http://$website.com/attendance.php");
+				if ($response->isOk()) {
+					$content_type = $response->header('content-type');
+					if(strpos($content_type, 'json') > 3) {
+						$body = $response->body('json_decode');
+						$secret = ($body->str1 == 'secret') ? 'good' : 'bad';
+					}
+					else {
+						$secret = $content_type;
+					}
+				}
+				else {
+					$secret = $response->code;
+				}
+			}
+			catch (\Cake\Core\Exception\Exception $e) {
+				$secret = $e->getMessage();
+			}
+		}   
         /*
  curl -i -d "secret=Abc" -H "Accept: application/json" "http://localhost:8765/umb-skeletons/login"
 HTTP/1.1 200 OK
@@ -117,9 +140,10 @@ X-DEBUGKIT-ID: 957b0bf2-e09a-4ff0-b3fa-35c39846772b
     "secret": "Abc"
 }
 		*/
-        $this->set(['secret'=>$secret,
-        '_serialize'=>['secret']
-        ]);
+		else
+			$secret = "Forbidden";
+        $this->Flash->success($secret);
+        return $this->redirect(['action' => 'index']);
     }
 
     /**
@@ -129,6 +153,17 @@ X-DEBUGKIT-ID: 957b0bf2-e09a-4ff0-b3fa-35c39846772b
      */
     public function add()
     {
+        $http = new Client();
+    	$response = $http->get("http://cpliu.myqnapcloud.com/attendance.php");
+    	if ($response->isOk()) {
+    		$content_type = $response->header('content-type');
+    		if(strpos($content_type, 'json') > 3)
+    			debug($response->json);
+    		else
+    			debug($content_type);
+    	}
+    	else
+    		debug($response->code);
         $umbSkeleton = $this->UmbSkeletons->newEntity();
         if ($this->request->is('post')) {
             $umbSkeleton = $this->UmbSkeletons->patchEntity($umbSkeleton, $this->request->getData());

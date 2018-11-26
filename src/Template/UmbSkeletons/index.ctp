@@ -48,6 +48,9 @@
 	$v = "<i class='glyphicon glyphicon-tags btn btn-warning'></i>";
 	echo $this->Html->link($v, ['controller' => 'UmbTags', 'action' => 'index'], ['escape'=>false]) 
 ?>
+<form id="login-form" method="POST" action="/umb-skeletons/login" >
+Secret: <input name="website"><input type="submit" id="login" class="btn btn-danger" value="login" />
+</form>
 <script>
 $(function() {
 	$("#dlg-view").dialog({
