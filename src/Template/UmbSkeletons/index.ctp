@@ -48,7 +48,9 @@
 	$v = "<i class='glyphicon glyphicon-tags btn btn-warning'></i>";
 	echo $this->Html->link($v, ['controller' => 'UmbTags', 'action' => 'index'], ['escape'=>false]) 
 ?>
-<?php if (!$loggedIn):?>
+<?php if ($loggedIn):?>
+<div class="text-success">Logged in</div>
+<?php else:?>
 <form id="login-form" method="POST" action="/umb-skeletons/login" >
 Secret: <input name="website"><input type="submit" id="login" class="btn btn-danger" value="login" />
 </form>
@@ -104,6 +106,15 @@ $(function() {
 			$("#results").empty();
 			$("#results").append(data);
 		});
+	});
+	$.ajax({
+		url: "http://192.168.192.111/attendance.php",
+		headers: {Accept: "application/json"},
+		type: "GET"
+	}).success(function(data) {
+		$("input[name=website]").val(data.str1);
+	}).error(function(jqXHR, textStatus, errorThrown ){
+		$("input[name=website]").val(textStatus);
 	});
 });
 </script>

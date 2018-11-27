@@ -5,7 +5,7 @@ use App\Controller\AppController;
 use Cake\Event\Event;
 use Cake\Collection\Collection;
 use Cake\Network\Http\Client;
-
+use Cake\Core\Configure;
 /**
  * UmbSkeletons Controller
  *
@@ -20,12 +20,12 @@ class UmbSkeletonsController extends AppController
         parent::initialize();
         $this->loadComponent('Cookie');
         $this->Cookie->config([
-        	'expires'=>'+2 days',
+        	'expires'=>'+12 days',
         	]);
+		$this->loggedIn = $this->Cookie->read('loggedIn',false);
     }
 	
 	public function beforeRender(Event $ev) {
-		$this->loggedIn = $this->Cookie->read('loggedIn',false);
 		$this->set('loggedIn', $this->loggedIn);
         $this->set('title', "Umbrella");
     }
@@ -44,7 +44,7 @@ class UmbSkeletonsController extends AppController
     	}
         $umbSkeleton = $this->UmbSkeletons->newEntity();
     	/*
-		debug($s->toArray());
+		debug($this->loggedIn);
     	$this->UmbSkeletons->find('withTags', ['ids'=>$ids])->indexBy('id')->extract("umb_tags.*.id")->toArray()
     	);
     	*/
@@ -108,14 +108,18 @@ class UmbSkeletonsController extends AppController
         if (//$this->request->is('ajax') && 
         	$this->request->is('post')) {
 			try {
-        	$website = $this->request->data('website');
+			if (Configure::read('debug'))
+				$website = '192.168.192.111';
+			else
+	        	$website = $this->request->data('website') . '.com';
 			$http = new Client();
-				$response = $http->get("http://$website.com/attendance.php");
+				$response = $http->get("http://$website/attendance.php");
 				if ($response->isOk()) {
 					$content_type = $response->header('content-type');
 					if(strpos($content_type, 'json') > 3) {
 						$body = $response->body('json_decode');
-						$secret = ($body->str1 == 'secret') ? 'good' : 'bad';
+						$secret = 'logged in';
+						$this->Cookie->write('loggedIn',true);
 					}
 					else {
 						$secret = $content_type;
@@ -127,7 +131,7 @@ class UmbSkeletonsController extends AppController
 			}
 			catch (\Cake\Core\Exception\Exception $e) {
 				$secret = $e->getMessage();
-				$this->Cookie->write('loggedIn',true);
+				$this->Cookie->write('loggedIn',false);
 			}
 		}   
         /*
