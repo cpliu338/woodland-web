@@ -25,6 +25,8 @@ class UmbSkeletonsController extends AppController
     }
 	
 	public function beforeRender(Event $ev) {
+		$this->loggedIn = $this->Cookie->read('loggedIn',false);
+		$this->set('loggedIn', $this->loggedIn);
         $this->set('title', "Umbrella");
     }
 
@@ -125,6 +127,7 @@ class UmbSkeletonsController extends AppController
 			}
 			catch (\Cake\Core\Exception\Exception $e) {
 				$secret = $e->getMessage();
+				$this->Cookie->write('loggedIn',true);
 			}
 		}   
         /*

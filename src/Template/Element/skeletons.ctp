@@ -22,7 +22,11 @@ $perfect_match = true;
                 </td>
                 <td class="actions">
                     <button data-tagid="<?=$skeleton->id?>" class="view btn btn-default glyphicon glyphicon-search"></button>
-                    <?=  $this->Html->link('', ['action'=>'edit', $skeleton->id], ['class'=>'view btn btn-danger glyphicon glyphicon-pencil', 'style'=>'margin-left:1em'])?> 
+<?php 
+	if (!$loggedIn)
+		echo $this->Html->link('', ['action'=>'edit', $skeleton->id], 
+			['class'=>'view btn btn-danger glyphicon glyphicon-pencil', 'style'=>'margin-left:1em']);
+?>
                 </td>
             </tr>
             <?php endforeach; ?>
