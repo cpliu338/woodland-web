@@ -23,7 +23,7 @@ $perfect_match = true;
                 <td class="actions">
                     <button data-tagid="<?=$skeleton->id?>" class="view btn btn-default glyphicon glyphicon-search"></button>
 <?php 
-	//if ($loggedIn)
+	if ($loggedIn)
 		echo $this->Html->link('', ['action'=>'edit', $skeleton->id], 
 			['class'=>'view btn btn-danger glyphicon glyphicon-pencil', 'style'=>'margin-left:1em']);
 ?>

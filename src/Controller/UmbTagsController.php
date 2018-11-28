@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 
 /**
  * UmbTags Controller
@@ -12,6 +13,27 @@ use App\Controller\AppController;
  */
 class UmbTagsController extends AppController
 {
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Cookie');
+        $this->Cookie->config([
+        	'expires'=>'+12 days',
+        	]);
+		$this->loggedIn = $this->Cookie->read('loggedIn',false);
+		if (!$this->loggedIn && (
+			$this->request->action === 'add' ||
+			$this->request->action === 'edit' ||
+			$this->request->action === 'delete'
+		))
+			throw new \Cake\Network\Exception\ForbiddenException;
+    }
+	
+	public function beforeRender(Event $ev) {
+		$this->set('loggedIn', $this->loggedIn);
+        $this->set('title', "Umbrella");
+    }
 
     /**
      * Index method

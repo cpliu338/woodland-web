@@ -43,12 +43,12 @@
 	<textarea id="dlg-text" rows="10" cols="20"></textarea>
 	<br>
 </div>
+<?php if ($loggedIn):?>
 <button id="add" class="btn btn-success glyphicon glyphicon-plus" style="margin-right: 4em"></button>
 <?php
 	$v = "<i class='glyphicon glyphicon-tags btn btn-warning'></i>";
 	echo $this->Html->link($v, ['controller' => 'UmbTags', 'action' => 'index'], ['escape'=>false]) 
 ?>
-<?php if ($loggedIn):?>
 <div class="text-success">Logged in</div>
 <?php else:?>
 <form id="login-form" method="POST" action="/umb-skeletons/login" >
