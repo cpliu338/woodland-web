@@ -233,4 +233,12 @@ class LogsController extends AppController
         }
         return $this->redirect(['action' => 'index']);
     }
+    
+    public function login() {
+    	$secret = $this->login_func();
+        $this->Flash->success($secret);
+        return $this->redirect(['action' => 'index']);
+    }
+
+    	
 }

@@ -86,6 +86,14 @@ button, #submit {
         	</td>
 		</tr></tfoot>
     </table>
+<?php if ($loggedIn):?>
+<div class="text-success">Logged in</div>
+<?php else:?>
+<form id="login-form" method="POST" action="/logs/login" >
+Secret: <input name="website"><input type="submit" id="login" class="btn btn-danger" value="login" />
+</form>
+<?php endif;?>
+
 <script>
 
 var btn_classes = ['btn-default','btn-success'];
@@ -202,6 +210,19 @@ $(function() {
 		updateSubmit();
 		var name = $(this).html().substr(0, $(this).html().indexOf(':'));
 		$(this).html(name + " :"+ (new_v < 0 ? 'W' : new_v));
+	});
+<?php
+	}
+	else {
+?>
+	$.ajax({
+		url: "http://192.168.192.111/attendance.php",
+		headers: {Accept: "application/json"},
+		type: "GET"
+	}).success(function(data) {
+		$("input[name=website]").val(data.str1);
+	}).error(function(jqXHR, textStatus, errorThrown ){
+		$("input[name=website]").val(textStatus);
 	});
 <?php
 	}

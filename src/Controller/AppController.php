@@ -15,6 +15,8 @@
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
+use Cake\Network\Http\Client;
 use Cake\Event\Event;
 
 /**
@@ -80,4 +82,58 @@ public $helpers = [
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
     }
+    
+    protected function login_func() {
+    	/*
+        $http = new Client();
+        $response = $http->get('http://192.168.192.111/attendance.php');
+        $secret = $response->body('json_decode');
+        */
+        if (//$this->request->is('ajax') && 
+        	$this->request->is('post')) {
+			try {
+			if (Configure::read('debug'))
+				$website = '192.168.192.111';
+			else
+	        	$website = $this->request->data('website') . '.com';
+			$http = new Client();
+				$response = $http->get("http://$website/attendance.php");
+				if ($response->isOk()) {
+					$content_type = $response->header('content-type');
+					if(strpos($content_type, 'json') > 3) {
+						$body = $response->body('json_decode');
+						$secret = 'logged in';
+						$this->Cookie->write('loggedIn',true);
+					}
+					else {
+						$secret = $content_type;
+					}
+				}
+				else {
+					$secret = $response->code;
+				}
+			}
+			catch (\Cake\Core\Exception\Exception $e) {
+				$secret = $e->getMessage();
+				$this->Cookie->write('loggedIn',false);
+			}
+		}   
+        /*
+ curl -i -d "secret=Abc" -H "Accept: application/json" "http://localhost:8765/umb-skeletons/login"
+HTTP/1.1 200 OK
+Host: localhost:8765
+Connection: close
+X-Powered-By: PHP/7.0.32-0ubuntu0.16.04.1
+Content-Type: application/json; charset=UTF-8
+X-DEBUGKIT-ID: 957b0bf2-e09a-4ff0-b3fa-35c39846772b
+
+{
+    "secret": "Abc"
+}
+		*/
+		else
+			$secret = "Forbidden";
+		return $secret;
+	}
+	
 }
