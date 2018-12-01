@@ -17,17 +17,6 @@ class UmbTagsController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('Cookie');
-        $this->Cookie->config([
-        	'expires'=>'+12 days',
-        	]);
-		$this->loggedIn = $this->Cookie->read('loggedIn',false);
-		if (!$this->loggedIn && (
-			$this->request->action === 'add' ||
-			$this->request->action === 'edit' ||
-			$this->request->action === 'delete'
-		))
-			throw new \Cake\Network\Exception\ForbiddenException;
     }
 	
 	public function beforeRender(Event $ev) {

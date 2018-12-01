@@ -58,6 +58,20 @@ public $helpers = [
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Cookie');
+        $this->Cookie->config([
+        	'expires'=>'+12 days',
+        	]);
+		$this->loggedIn = $this->Cookie->read('loggedIn',false);
+		if ($this->loggedIn)
+			$this->Cookie->write('loggedIn',true);
+		if (!$this->loggedIn && (
+			$this->request->action === 'add' ||
+			$this->request->action === 'edit' ||
+			$this->request->action === 'delete'
+		))
+			throw new \Cake\Network\Exception\ForbiddenException;
+		$this->set('loggedIn', $this->loggedIn);
 
         /*
          * Enable the following components for recommended CakePHP security settings.

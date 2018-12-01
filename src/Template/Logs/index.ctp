@@ -59,7 +59,7 @@ button, #submit {
                 	<?= $l->incurred->i18nFormat('EEE') ?>
                 	<?php $earlier = $l->incurred->i18nFormat('yyyy-MM-dd');
                 	$meal = $l->incurred->i18nFormat('HH') ?>
-                	<?php if ($last == $l->incurred): ?>
+                	<?php if ($last == $l->incurred && $loggedIn): ?>
                 		<?= $this->Form->postLink("<i class='glyphicon glyphicon-remove'></i>",
                 			['action'=>'delete'], ['class'=>"btn btn-danger", 'escape'=>false, 'confirm'=>'Are you sure?'])
                 		?>
@@ -172,15 +172,17 @@ $(function() {
     			$("tbody").append("<tr><td>error</td></tr>");
 		});
 	});
-	// click event for buttons having data-pid attribute
-	$("button[data-pid]").click(function (event) {
 <?php
 		/* each button has data-pid = person_id 
 		input_v hidden field related to this button
 		old_v current value of input_v
 		new_v value to be set to input_v
+		Rendered only if logged in
 		*/
+		if ($loggedIn) {
 ?>
+	// click event for buttons having data-pid attribute
+	$("button[data-pid]").click(function (event) {
 		var input_v = $('#id-' + $(this).data('pid'));
 		var new_v;
 		var old_v = input_v.val();
@@ -201,5 +203,8 @@ $(function() {
 		var name = $(this).html().substr(0, $(this).html().indexOf(':'));
 		$(this).html(name + " :"+ (new_v < 0 ? 'W' : new_v));
 	});
+<?php
+	}
+?>
 });
 </script>
